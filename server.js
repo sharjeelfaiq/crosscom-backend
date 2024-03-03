@@ -1,3 +1,6 @@
+// Import the database
+require("./db/config");
+
 // Create an Express App
 const express = require("express");
 const app = express();
@@ -6,8 +9,7 @@ const app = express();
 const cors = require("cors");
 app.use(cors());
 
-// Import the database configurations and the model(s)
-require("./db/config");
+// Import Models from mongodb database
 const User = require("./db/models/user");
 const Product = require("./db/models/product");
 

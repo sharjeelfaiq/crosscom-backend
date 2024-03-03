@@ -1,6 +1,13 @@
 try {
- const mongoose = require('mongoose');
- mongoose.connect('mongodb://127.0.0.1:27017/e-dashboard'); 
+  const mongoose = require("mongoose");
+  mongoose
+    .connect(
+      "mongodb+srv://sharjeelfaiq:wnvVkHx9TlXdpioG@cluster0.xvomymy.mongodb.net/e-dashboard"
+    )
+    .then(() => console.log("Database Connection Established."))
+    .catch((err) =>
+      console.error("Failed to establish connection to database. Error:", err)
+    );
 } catch (error) {
- console.error("Error in config.js", error);
+  console.error("Error in config.js", error);
 }

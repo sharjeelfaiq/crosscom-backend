@@ -1,9 +1,11 @@
+require("dotenv").config();
+
+const mongo_string = process.env.MONGO_STRING;
+
 try {
   const mongoose = require("mongoose");
   mongoose
-    .connect(
-      "mongodb+srv://sharjeelfaiq:wnvVkHx9TlXdpioG@cluster0.xvomymy.mongodb.net/e-dashboard"
-    )
+    .connect(mongo_string)
     .then(() => console.log("Database Connection Established."))
     .catch((err) =>
       console.error("Failed to establish connection to database. Error:", err)

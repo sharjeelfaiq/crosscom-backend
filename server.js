@@ -5,6 +5,8 @@ require("./db/config");
 const express = require("express");
 const app = express();
 
+require("dotenv").config();
+
 // Require cors package to resolve cors error
 const cors = require("cors");
 app.use(cors());
@@ -118,7 +120,7 @@ app.put("/update-product/:pid", async (req, res) => {
   }
 });
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}.`);

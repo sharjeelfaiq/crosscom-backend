@@ -18,12 +18,26 @@ const Product = require("./db/models/product");
 // Parses JSON requests to JavaScript Object
 app.use(express.json());
 
-// ROUTES
-app.get("/", async (req, res) => {
+// Home Route
+app.get("/", (req, res) => {
   try {
-    res.send("Hello from backend.");
+    res.send("Hello from backend.")
   } catch (error) {
     console.error(error);
+  }
+})
+
+// Get Product Route
+app.get("/get-products", async (req, res) => {
+  try {
+    const product = await Product.find({}, null, { timeout: 20000 });
+    if (product.length > 0) {
+      res.send(product);
+    } else {
+      res.send({ message: "No product found" });
+    }
+  } catch (error) {
+    console.error("Error in server.js; /get-product route", error);
   }
 });
 
@@ -69,20 +83,6 @@ app.post("/add-product", async (req, res) => {
   }
 });
 
-// Get Product Route
-app.get("/get-products", async (req, res) => {
-  try {
-    const product = await Product.find({}, null, { timeout: 20000 });
-    if (product.length > 0) {
-      res.send(product);
-    } else {
-      res.send({ message: "No product found" });
-    }
-  } catch (error) {
-    console.error("Error in server.js; /get-product route", error);
-  }
-});
-
 // Delete Product Route
 app.delete("/delete-product/:pid", async (req, res) => {
   try {
@@ -120,7 +120,7 @@ app.put("/update-product/:pid", async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}.`);

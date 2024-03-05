@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 // Get Product Route
 app.get("/get-products", async (req, res) => {
   try {
-    const product = await Product.find({}, null, { timeout: 20000 });
+    const product = await Product.find();
     if (product.length > 0) {
       res.send(product);
     } else {

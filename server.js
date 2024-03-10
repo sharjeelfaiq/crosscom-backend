@@ -18,16 +18,16 @@ const Product = require("./db/models/product");
 // Parses JSON requests to JavaScript Object
 app.use(express.json());
 
-// Home Route
+// Home Route + API
 app.get("/", (req, res) => {
   try {
-    res.send("Hello from backend.")
+    res.send("Hello from backend.");
   } catch (error) {
     console.error(error);
   }
-})
+});
 
-// Get Product Route
+// Get Product Route + API
 app.get("/get-products", async (req, res) => {
   try {
     const product = await Product.find();
@@ -41,7 +41,7 @@ app.get("/get-products", async (req, res) => {
   }
 });
 
-// Register Route
+// Register Route + API
 app.post("/register", async (req, res) => {
   try {
     const user = new User(req.body);
@@ -54,7 +54,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// Sign-in Route
+// Sign-in Route + API
 app.post("/signin", async (req, res) => {
   try {
     const user = await User.findOne(req.body).select("-password");
@@ -72,7 +72,7 @@ app.post("/signin", async (req, res) => {
   }
 });
 
-// Add Product Route
+// Add Product Route + API
 app.post("/add-product", async (req, res) => {
   try {
     const product = new Product(req.body);
@@ -83,7 +83,7 @@ app.post("/add-product", async (req, res) => {
   }
 });
 
-// Delete Product Route
+// Delete Product Route + API
 app.delete("/delete-product/:pid", async (req, res) => {
   try {
     const result = await Product.deleteOne({ _id: req.params.pid });
@@ -93,7 +93,7 @@ app.delete("/delete-product/:pid", async (req, res) => {
   }
 });
 
-// Delete All Products Route
+// Delete All Products Route + API
 app.delete("/delete-all-products/:uid", async (req, res) => {
   try {
     const result = await Product.deleteMany({ userId: req.params.uid });
@@ -103,7 +103,7 @@ app.delete("/delete-all-products/:uid", async (req, res) => {
   }
 });
 
-// Update Product Route
+// Update Product Route + API
 app.put("/update-product/:pid", async (req, res) => {
   try {
     const result = await Product.updateOne(
@@ -117,6 +117,22 @@ app.put("/update-product/:pid", async (req, res) => {
     res.send(result);
   } catch (error) {
     console.error("Error in server.js; /update-product route", error);
+  }
+});
+
+// Search Product Route + API
+app.get("/search/:key", async (req, res) => {
+  try {
+    let result = await Product.find({
+      $or: [{ productName: { $regex: new RegExp(req.params.key, "i") } }],
+    });
+    if (result.length > 0) {
+      res.send(result);
+    } else {
+      res.send({ result: "No Product Found" });
+    }
+  } catch (error) {
+    console.error(error);
   }
 });
 

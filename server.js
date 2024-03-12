@@ -131,8 +131,6 @@ app.get("/search/:key", async (req, res) => {
         { productPrice: Number.isFinite(parseFloat(req.params.key)) && { $eq: parseFloat(req.params.key) }},
       ],
     });
-
-    console.log(typeof Number.isFinite(parseFloat(req.params.key)));
     if (result.length > 0) {
       res.send(result);
     } else {

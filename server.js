@@ -124,7 +124,10 @@ app.put("/update-product/:pid", async (req, res) => {
 app.get("/search/:key", async (req, res) => {
   try {
     let result = await Product.find({
-      $or: [{ productName: { $regex: new RegExp(req.params.key, "i") } }],
+      $or: [
+        { productName: { $regex: new RegExp(req.params.key, "i") } },
+        { productCategory: { $regex: new RegExp(req.params.key, "i") } },
+      ],
     });
     if (result.length > 0) {
       res.send(result);

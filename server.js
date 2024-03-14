@@ -48,7 +48,7 @@ app.post("/register", async (req, res) => {
     let result = await user.save(); // Saves in the database the data created with the help of the JSON data and the user model
     result = result.toObject();
     delete result.password;
-    res.send(result);
+    res.send({ body: result, status: 200 });
   } catch (error) {
     console.error("Error in server.js; /register route", error);
   }
@@ -60,12 +60,12 @@ app.post("/signin", async (req, res) => {
     const user = await User.findOne(req.body).select("-password");
     if (req.body.email && req.body.password) {
       if (user) {
-        res.send(user);
+        res.send({ body: user, status: 200 });
       } else {
-        res.send({ message: "No user found" });
+        res.send({ body: {message: "No user found"} });
       }
     } else {
-      res.send({ message: "Email or password does not exist." });
+      res.send({ body: {message: "Email or password does not exist."} });
     }
   } catch (error) {
     console.error("Error in server.js; /sigin route", error);
@@ -128,7 +128,11 @@ app.get("/search/:key", async (req, res) => {
         { productName: { $regex: new RegExp(req.params.key, "i") } },
         { productCategory: { $regex: new RegExp(req.params.key, "i") } },
         { productCompany: { $regex: new RegExp(req.params.key, "i") } },
-        { productPrice: Number.isFinite(parseFloat(req.params.key)) && { $eq: parseFloat(req.params.key) }},
+        {
+          productPrice: Number.isFinite(parseFloat(req.params.key)) && {
+            $eq: parseFloat(req.params.key),
+          },
+        },
       ],
     });
     if (result.length > 0) {

@@ -45,10 +45,16 @@ app.get("/get-products", async (req, res) => {
 app.post("/register", async (req, res) => {
   try {
     const user = new User(req.body);
-    let result = await user.save(); // Saves in the database the data created with the help of the JSON data and the user model
-    result = result.toObject();
-    delete result.password;
-    res.send({ body: result, status: 200 });
+    let alreadyRegistered = await User.findOne(req.body).select("-password");
+
+    if (alreadyRegistered) {
+      res.send({ message: "User Already Exist", status: 409 });
+    } else {
+      let result = await user.save();
+      result = result.toObject();
+      delete result.password;
+      res.send({ body: result, status: 200 });
+    }
   } catch (error) {
     console.error("Error in server.js; /register route", error);
   }
@@ -62,10 +68,13 @@ app.post("/signin", async (req, res) => {
       if (user) {
         res.send({ body: user, status: 200 });
       } else {
-        res.send({ body: {message: "No user found"} });
+        res.send({ body: { message: "No user found" }, status: 200 });
       }
     } else {
-      res.send({ body: {message: "Email or password does not exist."} });
+      res.send({
+        body: { message: "Email or password does not exist." },
+        status: 200,
+      });
     }
   } catch (error) {
     console.error("Error in server.js; /sigin route", error);

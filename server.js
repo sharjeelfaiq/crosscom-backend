@@ -7,6 +7,9 @@ const app = express();
 
 require("dotenv").config();
 
+const JWT = require("jsonwebtoken");
+const JWTKey = "bilo";
+
 // Require cors package to resolve cors error
 const cors = require("cors");
 app.use(cors());
@@ -53,7 +56,13 @@ app.post("/register", async (req, res) => {
       let result = await user.save();
       result = result.toObject();
       delete result.password;
-      res.send({ body: result, status: 200 });
+
+      JWT.sign({ result }, JWTKey, { expiresIn: "1h" }, (err, token) => {
+        if (err) {
+          res.send({ result: "Something went wrong. Try again later. Error", err });
+        }
+        res.send({ body: result, status: 200, auth: token });
+      });
     }
   } catch (error) {
     console.error("Error in server.js; /register route", error);
@@ -66,7 +75,12 @@ app.post("/signin", async (req, res) => {
     const user = await User.findOne(req.body).select("-password");
     if (req.body.email && req.body.password) {
       if (user) {
-        res.send({ body: user, status: 200 });
+        JWT.sign({ user }, JWTKey, { expiresIn: "1h" }, (err, token) => {
+          if (err) {
+            res.send({ result: "Something went wrong. Try again later." });
+          }
+          res.send({ body: user, status: 200, auth: token });
+        });
       } else {
         res.send({ body: { message: "No user found" }, status: 200 });
       }

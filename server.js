@@ -1,172 +1,57 @@
 // Import the database
 require("./db/config");
 
+const controller = require("./controllers");
+const home = (req, res) => controller.home(req, res);
+const register = (req, res) => controller.register(req, res);
+const sign_in = (req, res) => controller.sign_in(req, res);
+const add_product = (req, res) => controller.add_product(req, res);
+const get_product = (req, res) => controller.get_products(req, res);
+const delete_product = (req, res) => controller.delete_product(req, res);
+const deleted_all_products = (req, res) =>
+  controller.delete_all_products(req, res);
+const update_product = (req, res) => controller.update_product(req, res);
+const search = (req, res) => controller.search(req, res);
+
 // Create an Express App
 const express = require("express");
 const app = express();
 
 require("dotenv").config();
 
-const JWT = require("jsonwebtoken");
-const JWTKey = "bilo";
-
 // Require cors package to resolve cors error
 const cors = require("cors");
 app.use(cors());
 
-// Import Models from mongodb database
-const User = require("./db/models/user");
-const Product = require("./db/models/product");
-
 // Parses JSON requests to JavaScript Object
 app.use(express.json());
 
-// Home Route + API
-app.get("/", (req, res) => {
-  try {
-    res.send("Hello from backend.");
-  } catch (error) {
-    console.error(error);
-  }
-});
+/* '/' ROUTE */
+app.get("/", home);
 
-// Get Product Route + API
-app.get("/get-products", async (req, res) => {
-  try {
-    const product = await Product.find();
-    if (product.length > 0) {
-      res.send(product);
-    } else {
-      res.send({ message: "No product found" });
-    }
-  } catch (error) {
-    console.error("Error in server.js; /get-product route", error);
-  }
-});
+/* '/register' ROUTE */
+app.post("/register", register);
 
-// Register Route + API
-app.post("/register", async (req, res) => {
-  try {
-    const user = new User(req.body);
-    let alreadyRegistered = await User.findOne(req.body).select("-password");
+/* '/signin' ROUTE */
+app.post("/signin", sign_in);
 
-    if (alreadyRegistered) {
-      res.send({ message: "User Already Exist", status: 409 });
-    } else {
-      let result = await user.save();
-      result = result.toObject();
-      delete result.password;
+/* '/add-products' ROUTE */
+app.post("/add-product", add_product);
 
-      JWT.sign({ result }, JWTKey, { expiresIn: "1h" }, (err, token) => {
-        if (err) {
-          res.send({ result: "Something went wrong. Try again later. Error", err });
-        }
-        res.send({ body: result, status: 200, auth: token });
-      });
-    }
-  } catch (error) {
-    console.error("Error in server.js; /register route", error);
-  }
-});
+/* '/get-products' ROUTE */
+app.get("/get-products", get_product);
 
-// Sign-in Route + API
-app.post("/signin", async (req, res) => {
-  try {
-    const user = await User.findOne(req.body).select("-password");
-    if (req.body.email && req.body.password) {
-      if (user) {
-        JWT.sign({ user }, JWTKey, { expiresIn: "1h" }, (err, token) => {
-          if (err) {
-            res.send({ result: "Something went wrong. Try again later." });
-          }
-          res.send({ body: user, status: 200, auth: token });
-        });
-      } else {
-        res.send({ body: { message: "No user found" }, status: 200 });
-      }
-    } else {
-      res.send({
-        body: { message: "Email or password does not exist." },
-        status: 200,
-      });
-    }
-  } catch (error) {
-    console.error("Error in server.js; /sigin route", error);
-  }
-});
+/* '/delete-product/:pid' ROUTE */
+app.delete("/delete-product/:pid", delete_product);
 
-// Add Product Route + API
-app.post("/add-product", async (req, res) => {
-  try {
-    const product = new Product(req.body);
-    let result = await product.save();
-    res.send(result);
-  } catch (error) {
-    console.error("Error in server.js; /add-product route", error);
-  }
-});
+/* '/delete-all-products' ROUTE */
+app.delete("/delete-all-products/:uid", deleted_all_products);
 
-// Delete Product Route + API
-app.delete("/delete-product/:pid", async (req, res) => {
-  try {
-    const result = await Product.deleteOne({ _id: req.params.pid });
-    res.send(result);
-  } catch (error) {
-    console.error("Error in server.js; /delete-product route", error);
-  }
-});
+/* '/update-product/:pid' ROUTE */
+app.put("/update-product/:pid", update_product);
 
-// Delete All Products Route + API
-app.delete("/delete-all-products/:uid", async (req, res) => {
-  try {
-    const result = await Product.deleteMany({ userId: req.params.uid });
-    res.send(result);
-  } catch (error) {
-    console.error("Error in server.js; /delete-all route", error);
-  }
-});
-
-// Update Product Route + API
-app.put("/update-product/:pid", async (req, res) => {
-  try {
-    const result = await Product.updateOne(
-      {
-        _id: req.params.pid,
-      },
-      {
-        $set: req.body,
-      }
-    );
-    res.send(result);
-  } catch (error) {
-    console.error("Error in server.js; /update-product route", error);
-  }
-});
-
-// Search Product Route + API
-app.get("/search/:key", async (req, res) => {
-  try {
-    let result = await Product.find({
-      $or: [
-        { productName: { $regex: new RegExp(req.params.key, "i") } },
-        { productCategory: { $regex: new RegExp(req.params.key, "i") } },
-        { productCompany: { $regex: new RegExp(req.params.key, "i") } },
-        {
-          productPrice: Number.isFinite(parseFloat(req.params.key)) && {
-            $eq: parseFloat(req.params.key),
-          },
-        },
-      ],
-    });
-    if (result.length > 0) {
-      res.send(result);
-    } else {
-      res.send({ result: "No Product Found" });
-    }
-  } catch (error) {
-    console.error(error);
-  }
-});
+/* '/search/:key' ROUTE */
+app.get("/search/:key", search);
 
 const port = process.env.PORT || 5000;
 

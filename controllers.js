@@ -7,7 +7,7 @@ const app = express();
 
 /* JWT TOKEN AUTHENTICATION */
 const JWT = require("jsonwebtoken");
-const JWTKey = "bilo";
+const JWTKey = "f6a8wef41w823f843afdc";
 
 /* REQUIRE CORS TO AVOID CROSS-ORIGIN DATA TRANSFER ISSUES */
 const cors = require("cors");

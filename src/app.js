@@ -9,7 +9,8 @@ import {
 
 const app = express();
 
-connectDatabase();
-configureRoutes(app);
-configureMiddleware(app);
 listenServer(app);
+
+connectDatabase();
+configureMiddleware(app);
+configureRoutes(app);

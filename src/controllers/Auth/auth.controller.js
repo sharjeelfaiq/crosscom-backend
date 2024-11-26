@@ -2,10 +2,9 @@ import AuthService from "../../services/Auth/auth.service.js";
 import { setTokenCookie, handleError } from "../../utils/utils.js";
 
 export default {
-  signup: async (req, res, next) => {
-    const userData = req.body;
-
+  signup: async (req, res, next) => {    
     try {
+      const userData = req.body;
       const user = await AuthService.signup(userData);
       const { token } = user;
       setTokenCookie(res, token);

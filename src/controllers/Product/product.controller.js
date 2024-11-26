@@ -54,7 +54,7 @@ export default {
   },
   delete_all_products: async (req, res) => {
     try {
-      const userId = req.params.uid
+      const userId = req.params.uid;
       const response = await ProductService.delete_all_products(userId);
       res.status(200).json(response);
     } catch (error) {
@@ -73,7 +73,10 @@ export default {
     try {
       const productId = req.params.pid;
       const productData = req.body;
-      const response = await ProductService.update_product(productId, productData);
+      const response = await ProductService.update_product(
+        productId,
+        productData,
+      );
       res.status(200).json(response);
     } catch (error) {
       return {

@@ -1,0 +1,20 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "src/app.js",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "src/app.js",
+        "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+      }
+    ],
+    "env": {
+      "MONGODB_URI": "mongodb+srv://mrmalik610:cksajNI3GCOVeqA7@cluster0.ixufe.mongodb.net/crosscom",
+      "PORT": "8080"
+    }
+  }

@@ -37,7 +37,7 @@ export default {
   },
   delete_all_products: async (userId) => {
     try {
-      const result = await Product.deleteMany({ userId });
+      const result = await Product.deleteMany({ userId: userId });
       return result;
     } catch (error) {
       console.error("Error in server.js; /delete-all route", error);

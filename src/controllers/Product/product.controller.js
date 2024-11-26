@@ -1,11 +1,10 @@
 import ProductService from "../../services/Product/product.service.js";
 
 export default {
-  add_product: (req, res) => {
-    const productData = req.body;
-
+  add_product: async (req, res) => {
     try {
-      const response = ProductService.add_product(productData);
+      const productData = req.body;
+      const response = await ProductService.add_product(productData);
       res.json(response);
     } catch (error) {
       return {
@@ -19,9 +18,10 @@ export default {
       });
     }
   },
-  get_products: (req, res) => {
+  get_products: async (req, res) => {
     try {
-      const response = ProductService.get_products(req, res);
+      const response = await ProductService.get_products();
+      console.log("response", response);
       res.json(response);
     } catch (error) {
       return {
@@ -35,9 +35,10 @@ export default {
       });
     }
   },
-  delete_product: (req, res) => {
+  delete_product: async (req, res) => {
     try {
-      const response = ProductService.delete_product(req, res);
+      const productId = req.params.pid;
+      const response = await ProductService.delete_product(productId);
       res.json(response);
     } catch (error) {
       return {
@@ -51,9 +52,10 @@ export default {
       });
     }
   },
-  delete_all_products: (req, res) => {
+  delete_all_products: async (req, res) => {
     try {
-      const response = ProductService.deleted_all_products(req, res);
+      const userId = req.params.uid
+      const response = await ProductService.deleted_all_products(userId);
       res.json(response);
     } catch (error) {
       return {
@@ -67,9 +69,11 @@ export default {
       });
     }
   },
-  update_product: (req, res) => {
+  update_product: async (req, res) => {
     try {
-      const response = ProductService.update_product(req, res);
+      const productId = req.params.pid;
+      const productData = req.body;
+      const response = await ProductService.update_product(productId, productData);
       res.json(response);
     } catch (error) {
       return {
@@ -83,9 +87,10 @@ export default {
       });
     }
   },
-  search: (req, res) => {
+  search: async (req, res) => {
     try {
-      const response = ProductService.search(req, res);
+      const searchKey = req.params.key;
+      const response = await ProductService.search(searchKey);
       res.json(response);
     } catch (error) {
       return {

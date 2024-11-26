@@ -11,45 +11,47 @@ export default {
       return error;
     }
   },
-  get_products: async (req, res) => {
+  get_products: async () => {
     try {
       const product = await Product.find();
-      if (product.length > 0) {
-        return product;
-      } else {
+      console.log("product", product);
+
+      if (product.length < 0) {
         throw Error("No Product Found");
       }
+
+      return product;
     } catch (error) {
       console.error("Error in server.js; /get-product route", error);
       return error;
     }
   },
-  delete_product: async (req, res) => {
+  delete_product: async (productId) => {
     try {
-      const result = await Product.deleteOne({ _id: req.params.pid });
+      const result = await Product.deleteOne({ _id: productId });
       return result;
     } catch (error) {
       console.error("Error in server.js; /delete-product route", error);
       return error;
     }
   },
-  delete_all_products: async (req, res) => {
+  delete_all_products: async (userId) => {
     try {
-      const result = await Product.deleteMany({ userId: req.params.uid });
+      const result = await Product.deleteMany({ userId });
       return result;
     } catch (error) {
       console.error("Error in server.js; /delete-all route", error);
       return error;
     }
   },
-  update_product: async (req, res) => {
+  update_product: async (productId, productData) => {
     try {
       const result = await Product.updateOne(
         {
-          _id: req.params.pid,
+          _id: productId,
         },
         {
-          $set: req.body,
+          $set: productData,
         },
       );
       return result;
@@ -58,16 +60,16 @@ export default {
       return error;
     }
   },
-  search: async (req, res) => {
+  search: async (searchKey) => {
     try {
       let result = await Product.find({
         $or: [
-          { productName: { $regex: new RegExp(req.params.key, "i") } },
-          { productCategory: { $regex: new RegExp(req.params.key, "i") } },
-          { productCompany: { $regex: new RegExp(req.params.key, "i") } },
+          { productName: { $regex: new RegExp(searchKey, "i") } },
+          { productCategory: { $regex: new RegExp(searchKey, "i") } },
+          { productCompany: { $regex: new RegExp(searchKey, "i") } },
           {
-            productPrice: Number.isFinite(parseFloat(req.params.key)) && {
-              $eq: parseFloat(req.params.key),
+            productPrice: Number.isFinite(parseFloat(searchKey)) && {
+              $eq: parseFloat(searchKey),
             },
           },
         ],

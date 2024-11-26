@@ -1,13 +1,15 @@
 import express from "express";
 
-import connectDb from "./config/db.config.js";
-import configureRoutes from "./config/routes.config.js";
-import configureMiddleware from "./config/middleware.config.js";
-import listenServer from "./config/server.config.js";
+import {
+  connectDatabase,
+  configureRoutes,
+  configureMiddleware,
+  listenServer,
+} from "./config/index.config.js";
 
 const app = express();
 
-connectDb();
+connectDatabase();
 configureRoutes(app);
 configureMiddleware(app);
 listenServer(app);

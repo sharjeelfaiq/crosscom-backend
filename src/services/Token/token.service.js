@@ -2,14 +2,34 @@ import createError from "http-errors";
 import jwt from "jsonwebtoken";
 
 import { handleError } from "../../utils/utils.js";
+import { configureEnvironment } from "../../config/index.config.js";
+
+const { JWT_KEY } = configureEnvironment();
 
 export default {
-  verifyToken: async (token) => {
-    // eslint-disable-next-line no-undef
-    const { JWT_SECRET } = process.env;
-
+  generateAuthToken: (user) => {
     try {
-      const decoded = jwt.verify(token, JWT_SECRET);
+      const { email, firstName } = user;
+
+      const token = jwt.sign(
+        {
+          _id: user._id.toString(),
+          email,
+          firstName,
+        },
+        JWT_KEY,
+        { expiresIn: "1h" },
+      );
+
+      return token;
+    } catch (error) {
+      throw handleError("Failed to generate auth token", error);
+    }
+  },
+  verifyToken: async (token) => {
+    try {
+      const decoded = jwt.verify(token, JWT_KEY);
+
       if (!decoded) {
         throw createError(401, "Token invalid");
       }
@@ -25,28 +45,6 @@ export default {
       } else {
         throw handleError("Failed to verify token", error);
       }
-    }
-  },
-
-  generateAuthToken: (user) => {
-    try {
-      // eslint-disable-next-line no-undef
-      const { JWT_SECRET } = process.env;
-      const { email, firstName } = user;
-
-      const token = jwt.sign(
-        {
-          _id: user._id.toString(),
-          email,
-          firstName,
-        },
-        JWT_SECRET,
-        { expiresIn: "1h" },
-      );
-
-      return token;
-    } catch (error) {
-      throw handleError("Failed to generate auth token", error);
     }
   },
 };

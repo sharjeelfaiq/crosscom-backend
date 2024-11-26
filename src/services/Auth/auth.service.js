@@ -12,7 +12,7 @@ const { createUserResponse } = helpers;
 
 export default {
   signup: async (userData) => {
-    const { name, email } = userData;
+    const { email } = userData;
 
     try {
       const existingUser = await User.findOne({ email });

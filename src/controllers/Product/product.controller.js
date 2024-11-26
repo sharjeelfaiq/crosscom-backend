@@ -5,7 +5,7 @@ export default {
     try {
       const productData = req.body;
       const response = await ProductService.add_product(productData);
-      res.json(response);
+      res.status(200).json(response);
     } catch (error) {
       return {
         status: 500,
@@ -22,7 +22,7 @@ export default {
     try {
       const response = await ProductService.get_products();
       console.log("response", response);
-      res.json(response);
+      res.status(200).json(response);
     } catch (error) {
       return {
         status: 500,
@@ -39,7 +39,7 @@ export default {
     try {
       const productId = req.params.pid;
       const response = await ProductService.delete_product(productId);
-      res.json(response);
+      res.status(200).json(response);
     } catch (error) {
       return {
         status: 500,
@@ -56,7 +56,7 @@ export default {
     try {
       const userId = req.params.uid
       const response = await ProductService.delete_all_products(userId);
-      res.json(response);
+      res.status(200).json(response);
     } catch (error) {
       return {
         status: 500,
@@ -74,7 +74,7 @@ export default {
       const productId = req.params.pid;
       const productData = req.body;
       const response = await ProductService.update_product(productId, productData);
-      res.json(response);
+      res.status(200).json(response);
     } catch (error) {
       return {
         status: 500,
@@ -91,7 +91,7 @@ export default {
     try {
       const searchKey = req.params.key;
       const response = await ProductService.search(searchKey);
-      res.json(response);
+      res.status(200).json(response);
     } catch (error) {
       return {
         status: 500,

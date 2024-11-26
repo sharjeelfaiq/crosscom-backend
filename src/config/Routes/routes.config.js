@@ -6,7 +6,7 @@ const apiRouter = express.Router();
 const v1Router = express.Router();
 
 v1Router.get("/", (req, res) => {
-  res.status(200).json({ message: "Welcome to the CrossCom Backend" });
+  res.status(200).send("Welcome to the CrossCom Backend");
 });
 
 v1Router.use("/auth", authRoutes);

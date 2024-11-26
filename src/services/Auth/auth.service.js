@@ -12,7 +12,7 @@ const { createUserResponse } = helpers;
 
 export default {
   signup: async (userData) => {
-    const { email } = userData;
+    const { name, email } = userData;
 
     try {
       const existingUser = await User.findOne({ email });
@@ -37,7 +37,7 @@ export default {
       const user = await User.findOne({ email }).select("+password");
 
       if (!user) {
-        throw createError(404, "User not found");
+        throw createError(404, "Invalid credentials");
       }
 
       const isMatch = await bcrypt.compare(password, user.password);

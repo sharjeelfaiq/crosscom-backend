@@ -10,7 +10,7 @@ v1Router.get("/", (req, res) => {
 });
 
 v1Router.use("/auth", authRoutes);
-v1Router.use("/products", productRoutes);
+v1Router.use("/product", productRoutes);
 
 apiRouter.use("/api/v1", v1Router);
 

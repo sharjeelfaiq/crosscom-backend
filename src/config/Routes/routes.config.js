@@ -3,11 +3,11 @@ import { authRoutes, productRoutes } from "../../routes/index.routes.js";
 
 const apiRouter = express.Router();
 
-const v1Router = express.Router();
-
-v1Router.get("/", (req, res) => {
+apiRouter.get("/", (req, res) => {
   res.status(200).send("Welcome to the CrossCom Backend");
 });
+
+const v1Router = express.Router();
 
 v1Router.use("/auth", authRoutes);
 v1Router.use("/product", productRoutes);

@@ -14,7 +14,6 @@ export default {
   get_products: async () => {
     try {
       const product = await Product.find();
-      console.log("product", product);
 
       if (product.length < 0) {
         throw Error("No Product Found");
